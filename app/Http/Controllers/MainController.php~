@@ -1,0 +1,53 @@
+<?php
+
+// Main controller code. Displays index page, adds owners and motorbikes to the database and returns the entered data for the tables, finds the closest owner. All grouped in one controller as this is such a small project.
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class MainController extends Controller
+{
+    public function showIndexPage()
+		{
+        return view('index', array('page' => 'index')); // Display the index page
+		}
+	
+	// Add an owner to the database:
+	public function addMag(Request $request)
+		{
+		// Use Laravel validation to check all fields are present:
+		$this->validate($request, [
+        'name' => 'required',
+        'price' => 'required',
+        'cover' => 'required',
+        'colour' => 'required',
+        'size' => 'required',
+        'theme' => 'required'
+		]);
+		
+		// Create a new owner record in the database:
+		$owner = Mag::create(['name' => $request->input('name'), 'price' => $request->input('price'), 'cover' => $request->input('cover'), 'colour' => $request->input('colour'), 'size' => $request->input('size'), 'theme' => $request->input('theme')]);	
+		
+		// Send owner data as JSON response over AJAX:
+		return response()->json(['id' => $owner->id, 'name' => $owner->name, 'motorbike_id' => $owner->motorbike_id, 'location' => $owner->lat.','.$owner->lon]);
+		}
+
+		
+	// Add a motorbike to the database:
+	public function deleteMag(Request $request)
+		{
+		// Use Laravel validation to check all fields are present:
+		$this->validate($request, [
+        'id' => 'required',
+		]);
+
+		// Create a new motorbike record in the database:
+		$motorbike = Motorbike::create(['brand' => $request->input('brand'), 'colour' => $request->input('colour'), 'model_year' => $request->input('model_year')]);
+
+		// Send motorbike data as JSON response over AJAX:
+		return response()->json(['id' => $motorbike->id, 'brand' => $motorbike->brand, 'colour' => $motorbike->colour, 'model_year' => $motorbike->model_year]);
+		}
+
+
+}

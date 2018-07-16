@@ -1,0 +1,4 @@
+/* Vertical spacing for top navbar, form, results tables, and closest owner button: */
+.container, form, table, #closest button {
+margin-top: 30px;
+}
